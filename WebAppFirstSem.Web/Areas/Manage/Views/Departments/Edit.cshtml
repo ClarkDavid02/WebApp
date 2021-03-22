@@ -1,0 +1,50 @@
+﻿@model WebAppFirstSem.Web.Areas.Manage.ViewModels.Departments.EditViewModel
+@{
+    Layout = "~/areas/manage/views/shared/_managelayout.cshtml";
+}
+
+
+<h1>Edit</h1>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form method="post" action="~/manage/departments/edit">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary()
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="form-group">
+                    <label for="DepartmentStatus" class="control-label mb-1">Department Status</label>
+                    <select class="form-control" id="DepartmentStatus" name="DepartmentStatus">
+                        @{
+                            var options = Enum.GetValues(typeof(WebAppFirstSem.Web.Infrastructures.Domain.Enums.DepartmentStatus)).Cast<WebAppFirstSem.Web.Infrastructures.Domain.Enums.DepartmentStatus>();
+
+                            foreach (WebAppFirstSem.Web.Infrastructures.Domain.Enums.DepartmentStatus option in options)
+                            {
+                                <option value="@option">@option.ToString()</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="control-label mb-2">Name</label>
+                    <input type="text" class="form-control" id="name" name="Name" aria-describedby="nameHelp" value="@Model.Name" placeholder="Enter Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="Budget" class="control-label mb-2">Budget</label>
+                    <input type="text" class="form-control" id="Budget" name="Budget" aria-describedby="descriptionHelp" value="@Model.Budget" placeholder="Enter Budget">
+                </div>
+
+                <div class="mt-2">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a href="~/manage/departments/details/@Model.Id" class="btn btn-danger">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

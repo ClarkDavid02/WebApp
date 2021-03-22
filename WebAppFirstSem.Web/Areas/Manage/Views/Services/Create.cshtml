@@ -1,0 +1,40 @@
+﻿@model WebAppFirstSem.Web.Areas.Manage.ViewModels.Services.CreateViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form method="post" action="/manage/services/create">
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary()
+
+                <div class="form-group">
+                    <label class="control-label">Name</label>
+                    <input type="text" class="form-control" name="Name" placeholder="Enter a name" />
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label">Description</label>
+                    <input type="text" class="form-control" name="Description" placeholder="Enter a description" />
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label">Price</label>
+                    <input type="text" class="form-control" name="Price" placeholder="Enter a price" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="~/manage/services/index" class="btn btn-danger">Cancel</a>
+
+
+            </form>
+        </div>
+    </div>
+</div>

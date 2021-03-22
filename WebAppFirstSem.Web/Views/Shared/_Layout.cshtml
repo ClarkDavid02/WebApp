@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebAppFirstSem.Web</title>
+    <link rel="stylesheet" href="~/Bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/FontAwesome/css/all.min.css" />
+
+</head>
+<body>
+    @Html.Partial("~/Areas/Manage/Views/Shared/_manageNavPartial.cshtml");
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - WebAppFirstSem.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/Jquery/jquery-3.6.0.min.js"></script>
+    <script src="~/Bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/FontAwesome/js/all.min.js"></script>
+    @RenderSection("Scripts", false)
+</body>
+</html>

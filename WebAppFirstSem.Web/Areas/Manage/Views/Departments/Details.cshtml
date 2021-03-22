@@ -1,0 +1,38 @@
+﻿@model WebAppFirstSem.Web.Infrastructures.Domain.Models.Department
+@{
+    Layout = "~/areas/manage/views/shared/_managelayout.cshtml";
+}
+
+<h1>Details</h1>
+
+
+<div>
+    <h4>Products</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+        <dt class="col-sm-2">
+            Budget
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Budget
+        </dd>
+        <dt class="col-sm-2">
+            Status
+        </dt>
+        <dd class="col-sm-10">
+            @Model.DepartmentStatus
+        </dd>
+       
+     
+    </dl>
+</div>
+<div>
+    <a href="~/manage/departments/edit/@Model.Id" class="btn btn-primary" asp-route-id="@Model.Id">Edit</a> |
+    <a href="~/manage/departments/index" class="btn btn-danger">Back to List</a>
+</div>

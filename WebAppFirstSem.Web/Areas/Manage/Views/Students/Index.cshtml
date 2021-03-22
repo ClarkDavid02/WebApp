@@ -1,0 +1,265 @@
+﻿@model WebAppFirstSem.Web.Areas.Manage.ViewModels.Students.IndexViewModel
+@using WebAppFirstSem.Web.Infrastructures.Domain.Enums
+@using WebAppFirstSem.Web.Infrastructures.Domain.Models
+@{
+    Layout = "~/areas/manage/views/shared/_managelayout.cshtml";
+}
+
+
+<h1>Index</h1>
+
+
+<div class="row">
+    <div class="col-lg-5">
+        <div class="input-group mt-5">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Students</span>
+            </div>
+            <select class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" id="searchStatus" onchange="searchTrigger()" placeholder="Student Status">
+                @{
+                    foreach (StudentStatus studentStatus in Model.StudentStatuses)
+                    {
+                        if (Model.StudentStatus == studentStatus)
+                        {
+                            <option value="@studentStatus" selected>@studentStatus.ToString()</option>
+                        }
+                        else
+                        {
+                            <option value="@studentStatus">@studentStatus.ToString()</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="col-lg-3 ">
+        <div class="input-group mt-5">
+            <input type="text" id="searchKeyword" placeholder="search student" class="form-control" aria-label="search student" aria-describedby="basic-addon2" value="@Model.Students.Keyword">
+            <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2"><a href="#" onclick="searchTrigger()"><i class="fa fa-search" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="table-responsive table--no-card m-b-30 mt-md-5">
+            <a href="~/manage/students/create" class="btn btn-lg-3 btn-success btn-block">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span>Create Student</span>
+            </a>
+        </div>
+    </div>
+</div>
+<hr />
+
+
+@if (Model.Students.Items.Count > 0)
+{
+    <table class="table table-borderless table-striped table-hover">
+        <thead>
+            <tr class="table-info">
+                <th>FullName</th>
+                <th>PhoneNumber</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (Student student in Model.Students.Items)
+                {
+                    <tr>
+                        <td>@student.FullName</td>
+                        <td>@student.PhoneNumber</td>
+                        <td>@student.Address</td>
+                        <td>@student.StudentStatus</td>
+                        <td>
+                            <a href="~/manage/students/details/@student.Id" title="Student Details"><button type="button" class="btn"><i class="fas fa-info"></i></button></a>
+                            <a href="#" onclick="confirmDeleteStudent('@student.Id', '@student.FullName')" title="Delete Service"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
+                            @{
+                                if (student.IsPublished)
+                                {
+                                    <li class="list-inline-item"><a href="#" title="Unpublish" onclick="confirmUnpublish('@student.Id','@student.FullName')"><button class="btn-danger form-control-sm"><i class="fas fa-window-close"></i></button></a></li>
+                                }
+                                else
+                                {
+                                    <li class="list-inline-item"><a href="#" title="Publish" onclick="confirmPublish('@student.Id','@student.FullName')"><button class="btn-success form-control-sm"><i class="fas fa-check-square"></i></button></a></li>
+                                }
+                            }
+
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><span class="form-control-plaintext">Page&nbsp;&nbsp;&nbsp;</span></li>
+                            <li class="page-item"><input type="number" value="@Model.Students.PageIndex" class="form-control" style="width:50px;" onKeydown="javascript: if(event.keyCode == 13 && isNaN(parseInt($(this).val()))==false) window.location='/manage/students/index?pageIndex=' + (isNaN(parseInt($(this).val())) ? 1 : parseInt($(this).val())) + '&keyword=@(Model.Students.Keyword)&status=@(Model.StudentStatus)" /></li>
+                            <li class="page-item"><span class="form-control-plaintext">&nbsp;&nbsp;&nbsp;of @Model.Students.PageCount&nbsp;&nbsp;&nbsp;</span></li>
+                            @{
+                                var prev = Model.Students.PageIndex - 1;
+                                if (prev > 0)
+                                {
+                                    <li class="page-item"><a class="page-link" href="~/manage/students/index?keyword=@Model.Students.Keyword&status=@Model.StudentStatus&pageSize=@Model.Students.PageSize&pageIndex=@prev"><span aria-hidden="true">&laquo;</span></a></li>
+                                }
+                            }
+                            <li class="page-item"><a class="page-link" href="#">@(Model.Students.PageIndex)</a></li>
+                            @{
+                                var next = Model.Students.PageIndex + 1;
+                                if (next <= Model.Students.PageCount)
+                                {
+                                    <li class="page-item"><a class="page-link" href="~/manage/students/index?keyword=@Model.Students.Keyword&status=@Model.StudentStatus&pageSize=@Model.Students.PageSize&pageIndex=@next"><span aria-hidden="true">&raquo;</span></a></li>
+                                }
+                            }
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <p>0 search results.</p>
+}
+
+<!--Model Delete-->
+<div class="modal" tabindex="-1" role="dialog" id="modal-delete-student">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <span id="modal-delete-student-fullname"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="modal-delete-student-confirm"><button type="button" class="btn btn-primary">Delete Student</button></a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--MODAL Unpublish-->
+<div class="modal" tabindex="-1" role="dialog" id="modal-unpublish">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Unpublish Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to unpublish <span id="modal-unpublish-name"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="modal-unpublish-button">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--MODAL Publish-->
+<div class="modal" tabindex="-1" role="dialog" id="modal-publish">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Publish Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to publish <span id="modal-publish-name"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="modal-publish-button">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    ////////////////////UNPUBLISH/////////////////////////////////////////////////////////////////
+    function confirmUnpublish(id, name) {
+        $("#modal-unpublish-name").html(name);
+        $("#modal-unpublish-button").attr("onclick", "UnpublishStudent('" + id + "')");
+        $("#modal-unpublish").modal("show");
+    }
+    function UnpublishStudent(id) {
+        $.ajax({
+            type: "POST",
+            url: "/manage/students/unpublish",
+            data: { id: id },
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr) {
+                var response = JSON.parse(xhr.responseText);
+                alert("Error Occured : " + response.errors[0]);
+                location.reload();
+            }
+        });
+    }
+
+
+    //////////////////PUBLISH///////////////////////////////////////////////////////////////////////
+    function confirmPublish(id, name) {
+        $("#modal-publish-name").html(name);
+        $("#modal-publish-button").attr("onclick", "PublishStudent('" + id + "')");
+        $("#modal-publish").modal("show");
+    }
+    function PublishStudent(id) {
+        $.ajax({
+            type: "POST",
+            url: "/manage/students/publish",
+            data: { id: id },
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr) {
+                var response = JSON.parse(xhr.responseText);
+                alert("Error Occured : " + response.errors[0]);
+                location.reload();
+            }
+        });
+    }
+
+    function confirmDeleteStudent(studentId, Name) {
+        $("#modal-delete-student-fullname").html(Name);
+        $("#modal-delete-student-confirm").attr("href", "/manage/students/delete/" + studentId);
+        $("#modal-delete-student").modal("show");
+    }
+
+    $("#searchKeyword").keyup(function (event) {
+        if (event.keyCode === 13) {
+            searchTrigger();
+        }
+    });
+
+    function searchTrigger() {
+        window.location = "/manage/students/index?pageIndex=1&keyword=" + $("#searchKeyword").val() + "&status=" + $("#searchStatus").val();
+    }
+
+
+</script>
