@@ -77,8 +77,10 @@
                         <td>@employee.EmployeeStatus</td>
                         <td>
                             <a href="~/manage/employees/details/@employee.Id" title="Employee Details"><button type="button" class="btn"><i class="fas fa-info"></i></button></a>
-                            <a href="#" onclick="confirmDeleteEmployee('@employee.Id', '@employee.FullName')" title="Delete Service"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
-                            @{
+                            <a href="~/manage/employees/edit/@employee.Id" title="Employee Update"><button type="button" class="btn"><i class="fas fa-upload"></i></button></a>
+
+                            <a href="#" onclick="confirmDeleteEmployee('@employee.Id', '@employee.FullName')" title="Employee Delete "><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
+                            @*@{
                                 if (employee.IsPublished)
                                 {
                                     <li class="list-inline-item"><a href="#" title="Unpublish" onclick="confirmUnpublish('@employee.Id','@employee.FullName')"><button class="btn-danger form-control-sm"><i class="fas fa-window-close"></i></button></a></li>
@@ -87,7 +89,7 @@
                                 {
                                     <li class="list-inline-item"><a href="#" title="Publish" onclick="confirmPublish('@employee.Id','@employee.FullName')"><button class="btn-success form-control-sm"><i class="fas fa-check-square"></i></button></a></li>
                                 }
-                            }
+                            }*@
 
 
                         </td>
@@ -144,7 +146,7 @@ else
                 <p>Are you sure you want to delete <span id="modal-delete-employee-fullname"></span>?</p>
             </div>
             <div class="modal-footer">
-                <a href="#" id="modal-delete-employees-confirm"><button type="button" class="btn btn-primary">Delete Employee</button></a>
+                <a href="#" id="modal-delete-employee-confirm"><button type="button" class="btn btn-primary">Delete Employee</button></a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -245,10 +247,10 @@ else
         });
     }
 
-    function confirmDeleteProduct(studentId, Name) {
+    function confirmDeleteEmployee(employeeId, Name) {
         $("#modal-delete-employee-fullname").html(Name);
-        $("#modal-delete-employee-confirm").attr("href", "/manage/employees/delete/" + studentId);
-        $("#modal-delete-student").modal("show");
+        $("#modal-delete-employee-confirm").attr("href", "/manage/employees/delete/" + employeeId);
+        $("#modal-delete-employee").modal("show");
     }
 
     $("#searchKeyword").keyup(function (event) {

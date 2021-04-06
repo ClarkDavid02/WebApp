@@ -73,8 +73,10 @@
                      
                         <td>
                             <a href="~/manage/departments/details/@department.Id" title="Departments Details"><button type="button" class="btn"><i class="fas fa-info"></i></button></a>
-                            <a href="#" onclick="confirmDeleteDepartment('@department.Id', '@department.Name')" title="Delete Service"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
-                            @{
+                            <a href="~/manage/departments/edit/@department.Id" title="Departments Update"><button type="button" class="btn"><i class="fas fa-upload"></i></button></a>
+                            <a href="#" onclick="confirmDeleteDepartment('@department.Id', '@department.Name')" title="Departments Delete"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
+
+                            @*@{
                                 if (department.IsPublished)
                                 {
                                     <li class="list-inline-item"><a href="#" title="Unpublish" onclick="confirmUnpublish('@department.Id','@department.Name')"><button class="btn-danger form-control-sm"><i class="fas fa-window-close"></i></button></a></li>
@@ -83,7 +85,7 @@
                                 {
                                     <li class="list-inline-item"><a href="#" title="Publish" onclick="confirmPublish('@department.Id','@department.Name')"><button class="btn-success form-control-sm"><i class="fas fa-check-square"></i></button></a></li>
                                 }
-                            }
+                            }*@
 
 
                         </td>
@@ -241,10 +243,10 @@ else
         });
     }
 
-    function confirmDeleteProduct(departmentId, Name) {
+    function confirmDeleteDepartment(departmentId, Name) {
         $("#modal-delete-department-name").html(Name);
         $("#modal-delete-department-confirm").attr("href", "/manage/departments/delete/" + departmentId);
-        $("#modal-delete-student").modal("show");
+        $("#modal-delete-department").modal("show");
     }
 
     $("#searchKeyword").keyup(function (event) {

@@ -160,6 +160,7 @@ namespace WebAppFirstSem.Web.Areas.Manage.Controllers
                     new EditViewModel()
                     {
                         Id = department.Id.Value,
+                        Budget = department.Budget,
                         Name = department.Name,
                         DepartmentStatus = department.DepartmentStatus,
                        

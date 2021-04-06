@@ -77,8 +77,9 @@
                         <td>@student.StudentStatus</td>
                         <td>
                             <a href="~/manage/students/details/@student.Id" title="Student Details"><button type="button" class="btn"><i class="fas fa-info"></i></button></a>
-                            <a href="#" onclick="confirmDeleteStudent('@student.Id', '@student.FullName')" title="Delete Service"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
-                            @{
+                            <a href="~/manage/students/edit/@student.Id" title="Student Update"><button type="button" class="btn"><i class="fas fa-upload"></i></button></a>
+                            <a href="#" onclick="confirmDeleteStudent('@student.Id', '@student.FullName')" title="Student Delete"><button type="button" class="btn"><i class="fas fa-times"></i></button></a>
+                            @*@{
                                 if (student.IsPublished)
                                 {
                                     <li class="list-inline-item"><a href="#" title="Unpublish" onclick="confirmUnpublish('@student.Id','@student.FullName')"><button class="btn-danger form-control-sm"><i class="fas fa-window-close"></i></button></a></li>
@@ -87,7 +88,7 @@
                                 {
                                     <li class="list-inline-item"><a href="#" title="Publish" onclick="confirmPublish('@student.Id','@student.FullName')"><button class="btn-success form-control-sm"><i class="fas fa-check-square"></i></button></a></li>
                                 }
-                            }
+                            }*@
 
 
                         </td>
