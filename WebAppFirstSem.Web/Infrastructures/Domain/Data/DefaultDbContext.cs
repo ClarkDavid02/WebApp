@@ -16,11 +16,17 @@ namespace WebAppFirstSem.Web.Infrastructures.Domain.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Student> Students { get; set; }
 
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+
         public DbSet<Service> Services { get; set; }
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<UserRole>().ToTable("UserRole");
             modelBuilder.Entity<Employee>().ToTable("Employee");
             modelBuilder.Entity<Department>().ToTable("Department");
             modelBuilder.Entity<Student>().ToTable("Student");

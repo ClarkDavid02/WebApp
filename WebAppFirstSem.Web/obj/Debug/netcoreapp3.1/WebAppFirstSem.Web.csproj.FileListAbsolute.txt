@@ -573,3 +573,5 @@ C:\Users\VGD PC 9\Videos\WEBAPPS\GitRooCdWebApp\WebAppFirstSem.Web\bin\Debug\net
 C:\Users\VGD PC 9\Videos\WEBAPPS\GitRooCdWebApp\WebAppFirstSem.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyModel.dll
 C:\Users\VGD PC 9\Videos\WEBAPPS\GitRooCdWebApp\WebAppFirstSem.Web\obj\Debug\netcoreapp3.1\WebAppFirstSem.Web.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\VGD PC 9\Videos\WEBAPPS\GitRooCdWebApp\WebAppFirstSem.Web\obj\Debug\netcoreapp3.1\WebAppFirstSem.Web.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\VGD PC 9\Videos\WEBAPPS\GitRooCdWebApp\WebAppFirstSem.Web\obj\Debug\netcoreapp3.1\Razor\Views\Accounts\Login.cshtml.g.cs
+C:\Users\VGD PC 9\Videos\WEBAPPS\GitRooCdWebApp\WebAppFirstSem.Web\obj\Debug\netcoreapp3.1\Razor\Views\Accounts\Register.cshtml.g.cs
