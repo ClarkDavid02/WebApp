@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BCrypt;
 using Microsoft.AspNetCore.Mvc;
 using WebAppFirstSem.Web.Infrastructures.Domain.Data;
 using WebAppFirstSem.Web.Infrastructures.Domain.Helpers;
@@ -61,7 +62,7 @@ namespace WebAppFirstSem.Web.Controllers
                 Address = model.Address,
                 Gender = model.Gender,
                 EmailAddress = model.EmailAddress,
-                Password = model.Password,
+                Password = BCryptHelper.HashPassword(model.Password, BCryptHelper.GenerateSalt(8)),
                 LoginStatus = Infrastructures.Domain.Enums.LoginStatus.Active,
 
             };
@@ -102,63 +103,68 @@ namespace WebAppFirstSem.Web.Controllers
 
             if (user != null)
             {
-                var userRole = this._context.UserRoles.FirstOrDefault(ur => ur.UserId == user.Id);
-                if (user.LoginStatus == Infrastructures.Domain.Enums.LoginStatus.InActive)
+                if(BCrypt.BCryptHelper.CheckPassword(model.Password,user.Password))
                 {
+                    var userRole = this._context.UserRoles.FirstOrDefault(ur => ur.UserId == user.Id);
+                    if (user.LoginStatus == Infrastructures.Domain.Enums.LoginStatus.InActive)
+                    {
 
-                    ModelState.AddModelError("", "Your account is In-active. Please verify your account.");
-                    return View(model);
+                        ModelState.AddModelError("", "Your account is In-active. Please verify your account.");
+                        return View(model);
+                    }
+                    else if (user.LoginStatus == Infrastructures.Domain.Enums.LoginStatus.AccountLocked)
+                    {
+                        ModelState.AddModelError("", "Your account has been locked!");
+                        return View(model);
+                    }
+                    else if (user.LoginRetries == 3 && user.Password != model.Password)
+                    {
+                        user.LoginRetries = user.LoginRetries + 1;
+                        user.LoginStatus = Infrastructures.Domain.Enums.LoginStatus.AccountLocked;
+                        this._context.Users.Update(user);
+                        this._context.SaveChanges();
+
+                        ModelState.AddModelError("", "Your login is failed 4 times. Your account has been locked!.");
+                        return View(model);
+                    }
+
+                    else if (user.LoginRetries == 3 && user.Password == model.Password)
+                    {
+                        user.LoginStatus = Infrastructures.Domain.Enums.LoginStatus.NeedToChangePassword;
+                        this._context.Users.Update(user);
+                        this._context.SaveChanges();
+
+                        ModelState.AddModelError("", "Your login is failed more than " + user.LoginRetries + " times. your account need to change password if you failed one more the account has been locked!.");
+                        return View(model);
+                    }
+
+                    else if (user.Password != model.Password)
+                    {
+
+                        user.LoginRetries = user.LoginRetries + 1;
+                        this._context.Users.Update(user);
+                        this._context.SaveChanges();
+
+
+                        ModelState.AddModelError("", "Invalid password. Login failed :" + user.LoginRetries);
+                        return View(model);
+                    }
+                    else if (userRole.Role == Infrastructures.Domain.Enums.Role.User && user.LoginStatus == Infrastructures.Domain.Enums.LoginStatus.Active && user.Password == model.Password)
+                    {
+                        user.LoginStatus = Infrastructures.Domain.Enums.LoginStatus.Active;
+                        user.LoginRetries = 0;
+
+                        var roles = this._context.UserRoles.Where(ur => ur.UserId == user.Id).Select(ur => ur.Role).ToList();
+
+                        WebUser.GetUser(user.Id, user.Surname, roles);
+                        this._context.Users.Update(user);
+                        this._context.SaveChanges();
+
+                        return Redirect("~/manage/authors/index");
+                    }
                 }
-                else if (user.LoginStatus == Infrastructures.Domain.Enums.LoginStatus.AccountLocked)
-                {
-                    ModelState.AddModelError("", "Your account has been locked!");
-                    return View(model);
-                }
-                else if (user.LoginRetries == 3 && user.Password != model.Password)
-                {
-                    user.LoginRetries = user.LoginRetries + 1;
-                    user.LoginStatus = Infrastructures.Domain.Enums.LoginStatus.AccountLocked;
-                    this._context.Users.Update(user);
-                    this._context.SaveChanges();
-
-                    ModelState.AddModelError("", "Your login is failed 4 times. Your account has been locked!.");
-                    return View(model);
-                }
-
-                else if (user.LoginRetries == 3 && user.Password == model.Password)
-                {
-                    user.LoginStatus = Infrastructures.Domain.Enums.LoginStatus.NeedToChangePassword;
-                    this._context.Users.Update(user);
-                    this._context.SaveChanges();
-
-                    ModelState.AddModelError("", "Your login is failed more than " + user.LoginRetries + " times. your account need to change password if you failed one more the account has been locked!.");
-                    return View(model);
-                }
-
-                else if (user.Password != model.Password)
-                {
-
-                    user.LoginRetries = user.LoginRetries + 1;
-                    this._context.Users.Update(user);
-                    this._context.SaveChanges();
-
-
-                    ModelState.AddModelError("", "Invalid password. Login failed :" + user.LoginRetries);
-                    return View(model);
-                }
-                else if (userRole.Role == Infrastructures.Domain.Enums.Role.User && user.LoginStatus == Infrastructures.Domain.Enums.LoginStatus.Active && user.Password == model.Password)
-                {
-                    user.LoginStatus = Infrastructures.Domain.Enums.LoginStatus.Active;
-                    user.LoginRetries = 0;
-
-                    var roles = this._context.UserRoles.Where(ur => ur.UserId == user.Id).Select(ur => ur.Role).ToList();
-
-                    WebUser.GetUser(user.Id, user.Surname, roles);
-                    this._context.Users.Update(user);
-                    this._context.SaveChanges();
-
-                    return Redirect("~/manage/authors/index");
-                }
+                ModelState.AddModelError("", "Invalid Login.");
+                return View();
 
 
             }
